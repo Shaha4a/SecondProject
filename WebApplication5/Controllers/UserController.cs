@@ -71,10 +71,15 @@ namespace WebApplication5.Controllers
         //    //return _userService.GetUserById(id);
         //}
         [HttpDelete("{id}")]
-        public void DeleteUser([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
-            _userService.DeleteById(id);
+            var result = await _userService.DeleteById(id);
 
+            if (result == "извените такого человека в списке нет")
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
         }
 
     }

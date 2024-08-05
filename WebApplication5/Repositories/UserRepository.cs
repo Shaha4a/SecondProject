@@ -18,7 +18,7 @@ namespace WebApplication5.Repositories
                 string query = $"INSERT INTO [dbo].[UserTable] ([Name],[Surname],[ThirdName] ,[Email],[DateOfBirth],[CreatedDate]) VALUES  (@Name, @Surname, @ThirdName, @Email, @DateOfBrith, SYSDATETIME())";
                 
                 //var commandDefinition = new CommandDefinition(query, new { user }); таким оброзам не получилось 
-                using IDbConnection connection = new SqlConnection(ConnectionString);
+                IDbConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 insertedRows = await connection.ExecuteAsync(query, user);//поэтому сделал таким
                 connection.Close();
@@ -49,7 +49,7 @@ namespace WebApplication5.Repositories
             }
             return insertedRows;
         }
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
             try
             {
@@ -57,31 +57,35 @@ namespace WebApplication5.Repositories
                 var commandDefinition = new CommandDefinition(query, new {  id });
                 var connection = new SqlConnection(ConnectionString);
                 connection.Open();
-                connection.Execute(commandDefinition);
+                await connection.ExecuteAsync(commandDefinition);
                 connection.Close();
+                
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-        public List<User> GetAll()
+        public async Task<List<User>> GetAll()
         {
             string query = $"SELECT [ID],[Name],[Surname],[ThirdName],[Email],[DateOfBirth],[CreatedDate] FROM [dbo].[UserTable]";
             var commandDefinition = new CommandDefinition(query );
             var connection = new SqlConnection(ConnectionString);
             connection.Open();
-            return connection.Query<User>(query).ToList();
+            var result = await connection.QueryAsync<User>(query);
+            return result.ToList();
             connection.Close();
         }
-        public List<User> GetById(int ID)
+        public async Task<List<User>> GetById(int ID)
         {
             string query = $"SELECT [ID], [Name] ,[Surname],[ThirdName],[Email],[DateOfBirth],[CreatedDate] FROM [dbo].[UserTable] WHERE ID = @ID";
             var commandDefinition = new CommandDefinition(query, new { ID });
             var connection = new SqlConnection(ConnectionString);
             connection.Open();
-            return connection.Query<User>(commandDefinition).ToList();
-            connection.Close();
+            var result = await connection.QueryAsync<User>(commandDefinition);
+            return result.ToList();
+            //return connection.Query<User>(commandDefinition).ToList();
+            //connection.Close();
         }
         
     }

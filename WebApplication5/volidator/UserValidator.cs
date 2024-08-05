@@ -20,10 +20,10 @@ namespace WebApplication5.volidator
 
             //}
 
-            RuleFor(user => user.Name).NotEmpty().Matches("^[A-Za-zА-Яа-яЁё\\s'-]+$").WithMessage("Name is required.").Length(2, 50).NotEqual("1234567890");
-            RuleFor(user => user.Surname).NotEmpty().WithMessage("Surname is required.");
-            RuleFor(user => user.Name).NotEmpty().WithMessage("Name is required.");
+            RuleFor(user => user.Name).NotEmpty().Matches("^[A-Za-zА-Яа-яЁё\\s'-]+$").WithMessage("Name is required.").Length(2, 50)9;
+            RuleFor(user => user.Surname).NotEmpty().WithMessage("Surname is required.").Length(2, 50);
             RuleFor(user => user.Email).NotEmpty().WithMessage("Email is required").EmailAddress();
+            RuleFor(user => user.Id).IsInEnum();
         }
     }
 }
